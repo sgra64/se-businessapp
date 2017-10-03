@@ -47,7 +47,7 @@ public class App extends Application {
 		BusinessLogicIntf businessLogic = LogicFactory.getBusinessLogic();
 		businessLogic.loadData();
 
-		Tab t0 = loadTaxCalculatorView( "Tax-Calculator", i++, LogicFactory.getCalculatorLogic() );
+		Tab t0 = loadTaxCalculatorView( "MwSt-Rechner", i++, LogicFactory.getCalculatorLogic() );
 		//Tab t1 = loadTaxCalculatorView( "Tax-Calculator (Demo)", i++, new demo.CalculatorDemo() );
 
 		Tab t2 = addTab( "Privatkunden", i++, sceneLoader.loadFXML(
