@@ -47,7 +47,7 @@ class FXSceneLoader {
 	Node loadFXML( Class<? extends ViewControllerIntf> controllerClass, FXSceneLoader_FIntf callback ) {
 		Node node = null;
 		String afs[] =	controllerClass.getProtectionDomain().getCodeSource().getLocation().getPath().split( ":" );
-		String absPkgPth = (afs.length > 1? afs[1] : afs[0]).replace("%20", " ");
+		String absPkgPth = afs.length > 1? afs[1] : afs[0];
 		String absClsPth = absPkgPth + controllerClass.getPackage().getName().replace( '.', '/' );
 		String relClsPth = "/" + ( controllerClass.getPackage().getName().replace( '.', '/' ) );
 
