@@ -9,6 +9,7 @@ import static org.junit.Assert.assertTrue;
 public class IndividualCustomerTest {
 
     private IndividualCustomer indicust;
+    final String empty = "";
 
     @Before
     public void setUp() {
@@ -16,7 +17,17 @@ public class IndividualCustomerTest {
     }
 
     @Test
-    public void testSetGetFirstName(){
+    public void testSetGetID() {
+        //
+    }
+
+    @Test
+    public void testSetGetCreated() {
+        //
+    }
+
+    @Test
+    public void testSetGetFirstName() {
         String first = "Peter";
         indicust.setFirstName(first);
         //assertTrue(indicust.getFirstName().equals(first));
@@ -24,11 +35,10 @@ public class IndividualCustomerTest {
 
         indicust.setFirstName(null);
         assertEquals(null, indicust.getFirstName());
-
     }
 
     @Test
-    public void testSetGetName(){
+    public void testSetGetName() {
         String last = "Peterson";
         indicust.setName(last);
         //assertTrue(indicust.getName().equals(last));
@@ -36,7 +46,5 @@ public class IndividualCustomerTest {
 
         indicust.setName(null);
         assertEquals(null, indicust.getName());
-
     }
-
 }
