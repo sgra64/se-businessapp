@@ -5,26 +5,29 @@ import com.businessapp.model.Customer;
 import com.businessapp.model.IndividualCustomer;
 import org.junit.*;
 
-import java.util.Date;
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.*;
 
-import static junit.framework.TestCase.assertEquals;
-import static org.junit.Assert.assertTrue;
+import java.util.Date;
 
 public class IndividualCustomerTest {
 
     private IndividualCustomer indicust;
-    final String empty = "";
+    private final String empty = "";
+    private String idGen;
 
     @Before
     public void setUp() {
         indicust = new IndividualCustomer();
+        idGen = LogicFactory.getBusinessLogic().nextId(Customer.class);
     }
 
     @Test
     public void testSetGetID() {
-        String id = LogicFactory.getBusinessLogic().nextId(Customer.class);
-        indicust.setId(id);
-        assertEquals(id, indicust.getId());
+        String idA = idGen;
+        indicust.setId(idA);
+        assertEquals(idA, indicust.getId());
+        assertThat(idA == indicust.getId(), is(true));
 
         indicust.setId(empty);
         assertEquals(empty, indicust.getId());
@@ -38,9 +41,6 @@ public class IndividualCustomerTest {
         Date created = new Date();
         indicust.setCreated(created);
         assertEquals(created, indicust.getCreated());
-
-        //indicust.setCreated(empty);
-        //assertEquals(empty, indicust.getCreated());
 
         indicust.setCreated(null);
         assertEquals(null, indicust.getCreated());
@@ -71,4 +71,15 @@ public class IndividualCustomerTest {
         indicust.setName(null);
         assertEquals(null, indicust.getName());
     }
+
+     /*
+     Was ist der Unterschied zwischen den assert‐Statements in folgendem Code:
+     String s1 = "ABC";
+     String s2 = new String( "ABC" );
+     assertEquals( s1, s2 );
+     assertThat( s1==s2, is( true ) );
+
+     Antwort: assertEquals fragt ab, ob die Objekte gleich (von ihren Werten her) sind
+     assertThat s1==s2 fragt ab, ob die Objekte die selben Objekte sind und nicht nur gleichartig mit gleichen Werten sind
+     */
 }
