@@ -16,7 +16,7 @@ package com.businessapp.logic;
  * <p>
  * Method(s):
  *	- public void nextToken( Token tok );	;process next token from UI controller
- * 
+ *
  */
 class CalculatorLogic implements CalculatorLogicIntf {
 
@@ -55,6 +55,7 @@ class CalculatorLogic implements CalculatorLogicIntf {
 
 			case K_DIV:
 				throw new ArithmeticException( "ERR: div by zero" );
+
 			case K_MUL:
 			case K_PLUS:
 			case K_MIN:
@@ -63,11 +64,13 @@ class CalculatorLogic implements CalculatorLogicIntf {
 				break;
 
 			case K_VAT:
-				CalculatorLogicIntf.SIDEAREA.set(
-					"Brutto:  1,000.00\n" +
-					VAT_RATE + "% MwSt:  159.66\n" +
-					"Netto:  840.34"
-				);
+			    double vat = Double.parseDouble(dsb.toString());
+			    double net = Math.round((vat/(100+VAT_RATE)*100)*100.0)/100.0;
+			    double vatnet = Math.round((vat-net)*100.0)/100.0;
+                CalculatorLogicIntf.SIDEAREA.set(
+					"Brutto:  " + vat + "\n" +
+					VAT_RATE + "% MwSt:  " + vatnet + "\n" +
+					"Netto:  " + net);
 				break;
 
 			case K_DOT:
