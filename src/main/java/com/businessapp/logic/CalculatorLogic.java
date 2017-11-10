@@ -1,8 +1,6 @@
 package com.businessapp.logic;
 
 
-import java.util.regex.Pattern;
-
 /**
  * ********************************************************************************
  * Local implementation class (unfinished) of calculator logic.
@@ -62,37 +60,52 @@ class CalculatorLogic implements CalculatorLogicIntf {
                     nextToken(Token.K_0);
                     nextToken(Token.K_0);
                     break;
-                case K_DIV:
-                    if (checkMultiple("/")) {
+                case K_BROP:
+                    if (comparePrev("(")) {
                         break;
                     } else {
                         appendBuffer(d);
+                        break;
+                    }
+                case K_BRCL:
+                    if (comparePrev(")")) {
+                        break;
+                    } else {
+                        appendBuffer(d);
+                        break;
+                    }
+                case K_DIV:
+                    if (comparePrev("/")) {
+                        break;
+                    } else {
+                        appendBuffer(d);
+                        // TODO Div by Zero
                         //throw new ArithmeticException( "ERR: div by zero" );
                         break;
                     }
                 case K_MUL:
-                    if (checkMultiple("*")) {
+                    if (comparePrev("*")) {
                         break;
                     } else {
                         appendBuffer(d);
                         break;
                     }
                 case K_PLUS:
-                    if (checkMultiple("+")) {
+                    if (comparePrev("+")) {
                         break;
                     } else {
                         appendBuffer(d);
                         break;
                     }
                 case K_MIN:
-                    if (checkMultiple("-")) {
+                    if (comparePrev("-")) {
                         break;
                     } else {
                         appendBuffer(d);
                         break;
                     }
                 case K_EQ:
-                    if (checkMultiple("=")) {
+                    if (comparePrev("=")) {
                         break;
                     } else {
                         CalculatorLogicIntf.SIDEAREA.set(calculate(dsb.toString()).toString());
@@ -110,7 +123,7 @@ class CalculatorLogic implements CalculatorLogicIntf {
                                     + "Netto:  " + net);
                     break;
                 case K_DOT:
-                    if (checkMultiple(".")) {
+                    if (comparePrev(".")) {
                         break;
                     } else {
 
@@ -135,6 +148,7 @@ class CalculatorLogic implements CalculatorLogicIntf {
         } catch (ArithmeticException e) {
             CalculatorLogicIntf.DISPLAY.set(e.getMessage());
         }
+        System.out.println("Buffer reads: [" + dsb.toString() + "]");
     }
 
     /*
@@ -146,19 +160,108 @@ class CalculatorLogic implements CalculatorLogicIntf {
         }
     }
 
-    private Boolean checkMultiple(String symbol) {
-        //TODO
-        String regex = "";
-        /*
-        String regex = "\\d*\\";
-        regex += symbol;
-        regex += "+\\d*";
-        */
-        if (Pattern.matches(regex, dsb.toString())) {
-            System.out.println("Warning: '" + symbol + "' exists already in '" + dsb.toString() + "'.");
-            CalculatorLogicIntf.SIDEAREA.set("'" + symbol + "' exists already in '" + dsb.toString() + "'.");
-            return true;
-        } else return false;
+    //TODO stop multiple symbols
+    private Boolean comparePrev(String input) {
+        String prev;
+        if (dsb.length() == 0) {
+            prev = "";
+        } else {
+            prev = dsb.substring(dsb.length() - 1);
+        }
+        if (prev.matches("\\d") || prev.equals("")) {
+            return false;
+        } else {
+            String[][] rules = new String[][]{
+                /*    INPUT  //           PREVIOUS SYMBOL                */
+                /* 0: empty */{"", "+", "-", "*", "/", ".", "(", ")", "="},
+                /* 1:   +   */{"", "+", "-", "*", "/", ".", "(", "="},
+                /* 2:   -   */{"-", ".", "="},
+                /* 3:   *   */{"", "*", "+", "-", "/", ".", "(", "="},
+                /* 4:   /   */{"", "/", "+", "-", "*", ".", "(", "="},
+                /* 5:   .   */{"", ".", "+", "-", "*", "/", "(", ")", "="},
+                /* 6:   (   */{".", ")", "="},
+                /* 7:   )   */{"", "+", "-", "*", "/", ".", "(", "="},
+                /* 8:   =   */{"", "=", "+", "-", "*", "/", ".", "("}
+            };
+
+            // define consequence of input-symbol, depending on previous input
+            switch (input) {
+                case "":
+                    // rules[0] is "" row
+                    for (int i = 0; i < rules[0].length; i++) {
+                        if (prev.equals(rules[0][i])) {
+                            return true;
+                        }
+                    }
+                    break;
+                case "+":
+                    // rules[1] is "+" row
+                    for (int i = 0; i < rules[1].length; i++) {
+                        if (prev.equals(rules[1][i])) {
+                            return true;
+                        }
+                    }
+                    break;
+                case "-":
+                    // rules[2] is "-" row
+                    for (int i = 0; i < rules[2].length; i++) {
+                        if (prev.equals(rules[2][i])) {
+                            return true;
+                        }
+                    }
+                    break;
+                case "*":
+                    // rules[3] is "*" row
+                    for (int i = 0; i < rules[3].length; i++) {
+                        if (prev.equals(rules[3][i])) {
+                            return true;
+                        }
+                    }
+                    break;
+                case "/":
+                    // rules[4] is "/" row
+                    for (int i = 0; i < rules[4].length; i++) {
+                        if (prev.equals(rules[4][i])) {
+                            return true;
+                        }
+                    }
+                    break;
+                case ".":
+                    // rules[5] is "." row
+                    for (int i = 0; i < rules[5].length; i++) {
+                        if (prev.equals(rules[5][i])) {
+                            return true;
+                        }
+                    }
+                    break;
+                case "(":
+                    // rules[6] is "(" row
+                    for (int i = 0; i < rules[6].length; i++) {
+                        if (prev.equals(rules[6][i])) {
+                            return true;
+                        }
+                    }
+                    break;
+                case ")":
+                    // rules[7] is ")" row
+                    for (int i = 0; i < rules[7].length; i++) {
+                        if (prev.equals(rules[7][i])) {
+                            return true;
+                        }
+                    }
+                    break;
+                case "=":
+                    // rules[8] is "=" row
+                    for (int i = 0; i < rules[8].length; i++) {
+                        if (prev.equals(rules[8][i])) {
+                            return true;
+                        }
+                    }
+                    break;
+                default:
+            }
+        }
+        return false;
     }
 
     private Double calculate(String in) {
@@ -169,8 +272,6 @@ class CalculatorLogic implements CalculatorLogicIntf {
         int minus = in.indexOf("-");
         int mul = in.indexOf("*");
         int div = in.indexOf("/");
-        System.out.println("Indices of Operators for: '" + in + "'");
-        //DEBUG: System.out.println("Plus: " + plus + " Minus: " + minus + " Div: " + div + " Multi: " + mul);
 
         if (plus != -1) {
             a = calculate(in.substring(0, plus));

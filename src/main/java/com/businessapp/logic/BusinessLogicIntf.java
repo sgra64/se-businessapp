@@ -15,9 +15,6 @@ import com.businessapp.model.Reservation;
  */
 public interface BusinessLogicIntf extends LogicIntf {
 
-	/*
-	 * TODO: javadocs
-	 */
 	Customer newIndividualCustomer();
 
 	Customer newBusinessCustomer();
