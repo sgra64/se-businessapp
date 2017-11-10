@@ -67,6 +67,7 @@ public class CalculatorViewController implements ViewControllerIntf {
 		CalculatorLogicIntf.SIDEAREA.set( "" );
 
 		for( Node child : keypadGridPane.getChildren() ) {
+			System.out.println("Debug:" + child);
 			if( GridPane.getRowIndex( child ) == 0 ) {
 				keypadGridPaneColumns = Math.max( keypadGridPaneColumns, GridPane.getColumnIndex( child ) + 1 );
 			} else
