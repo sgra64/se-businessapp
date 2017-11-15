@@ -79,8 +79,6 @@ class CalculatorLogic implements CalculatorLogicIntf {
                         break;
                     } else {
                         appendBuffer(d);
-                        // TODO Div by Zero
-                        //throw new ArithmeticException( "ERR: div by zero" );
                         break;
                     }
                 case K_MUL:
@@ -108,8 +106,10 @@ class CalculatorLogic implements CalculatorLogicIntf {
                     if (comparePrev("=")) {
                         break;
                     } else {
-                        CalculatorLogicIntf.SIDEAREA.set(calculate(dsb.toString()).toString());
-                        appendBuffer(d);
+                        String math = dsb.toString();
+                        dsb.setLength(0);
+                        appendBuffer(calculate(math).toString());
+                        CalculatorLogicIntf.SIDEAREA.set(CalculatorLogicIntf.SIDEAREA.getValue() + math + "\n");
                         break;
                     }
                 case K_VAT:
@@ -126,8 +126,7 @@ class CalculatorLogic implements CalculatorLogicIntf {
                     if (comparePrev(".")) {
                         break;
                     } else {
-
-                        //appendBuffer(d);
+                        appendBuffer(d);
                         break;
                     }
                 case K_BACK:
@@ -160,14 +159,15 @@ class CalculatorLogic implements CalculatorLogicIntf {
         }
     }
 
-    //TODO stop multiple symbols
     private Boolean comparePrev(String input) {
         String prev;
+
         if (dsb.length() == 0) {
             prev = "";
         } else {
             prev = dsb.substring(dsb.length() - 1);
         }
+
         if (prev.matches("\\d") || prev.equals("")) {
             return false;
         } else {
@@ -265,19 +265,25 @@ class CalculatorLogic implements CalculatorLogicIntf {
     }
 
     private Double calculate(String in) {
-        double a = 0;
-        double b = 0;
+        double a;
+        double b;
 
         int plus = in.indexOf("+");
         int minus = in.indexOf("-");
         int mul = in.indexOf("*");
         int div = in.indexOf("/");
+        int brop = in.indexOf("(");
+        int brcl = in.indexOf(")");
 
-        if (plus != -1) {
+        if (brop >= 0 && brcl >= 0) {
+            double c = calculate(in.substring(0, brop) + calculate(in.substring(brop + 1, brcl)) + in.substring(brcl + 1, in.length()));
+            return c;
+        } else if (plus != -1) {
             a = calculate(in.substring(0, plus));
             b = calculate(in.substring(plus + 1, in.length()));
             return a + b;
         } else if (minus != -1) {
+            // TODO make negative numbers work
             a = calculate(in.substring(0, minus));
             b = calculate(in.substring(minus + 1, in.length()));
             return a - b;
@@ -286,6 +292,14 @@ class CalculatorLogic implements CalculatorLogicIntf {
             b = calculate(in.substring(mul + 1, in.length()));
             return a * b;
         } else if (div != -1) {
+
+            // special case for Divison by Zero
+            System.out.println(in.substring(div, in.length()));
+            if (!(in.substring(div, in.length()).matches("/0\\.\\d"))) {
+                // TODO wieso erkennt dieses regex /4.0 zB. und wirft die exception ???
+                //throw new ArithmeticException("ERR: div by zero");
+            }
+
             a = calculate(in.substring(0, div));
             b = calculate(in.substring(div + 1, in.length()));
             return a / b;
