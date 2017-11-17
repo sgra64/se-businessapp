@@ -283,7 +283,6 @@ class CalculatorLogic implements CalculatorLogicIntf {
             b = calculate(in.substring(plus + 1, in.length()));
             return a + b;
         } else if (minus != -1) {
-            // TODO make negative numbers work
             a = calculate(in.substring(0, minus));
             b = calculate(in.substring(minus + 1, in.length()));
             return a - b;
