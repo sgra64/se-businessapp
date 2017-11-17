@@ -292,16 +292,14 @@ class CalculatorLogic implements CalculatorLogicIntf {
             b = calculate(in.substring(mul + 1, in.length()));
             return a * b;
         } else if (div != -1) {
-
-            // special case for Divison by Zero
-            System.out.println(in.substring(div, in.length()));
-            if (!(in.substring(div, in.length()).matches("/0\\.\\d"))) {
-                // TODO wieso erkennt dieses regex /4.0 zB. und wirft die exception ???
-                //throw new ArithmeticException("ERR: div by zero");
-            }
-
             a = calculate(in.substring(0, div));
             b = calculate(in.substring(div + 1, in.length()));
+
+            // special case for Divison by Zero
+            if (b == 0) {
+                throw new ArithmeticException("ERR: div by zero");
+            }
+
             return a / b;
         }
         return Double.parseDouble(in);
