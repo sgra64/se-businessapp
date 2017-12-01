@@ -45,7 +45,7 @@ public abstract class Customer implements EntityIntf {
 
 	public void setId( String id ) {
 		this.id = id;  // original
-		//this.id = new String (id);
+		//this.id = new String (id);gi
 	}
 
 	public Date getCreated() {
