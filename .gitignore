@@ -1,7 +1,6 @@
 .classpath
 .project
 .settings
-archive
 info.txt
-src/main/java/com/businessapp/demo
 target
+lib
