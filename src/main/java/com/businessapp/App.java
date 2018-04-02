@@ -1,115 +1,142 @@
 package com.businessapp;
 
-import com.businessapp.fxgui.AppController;
-import com.businessapp.fxgui.CalculatorViewController;
-import com.businessapp.fxgui.BusinessCustomerViewController;
-import com.businessapp.fxgui.IndividualCustomerViewController;
-import com.businessapp.fxgui.ReservationViewController;
-import com.businessapp.logic.BusinessLogicIntf;
-import com.businessapp.logic.LogicFactory;
-import com.businessapp.logic.LogicIntf;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import com.businessapp.fxgui.AppGUIBuilder;
+import com.businessapp.logic.CalculatorLogicIntf;
+import com.businessapp.logic.CustomerDataIntf;
 
 import javafx.application.Application;
-import javafx.scene.Node;
-import javafx.scene.Scene;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
-
+/**
+ * Main class launched by JavaFX runtime.
+ *
+ */
 public class App extends Application {
-	public final static String NAME = "SE Business App";
-	private Scene rootScene;
-	private BorderPane rootPane;
-	private TabPane tabsPane;
-	private FXSceneLoader sceneLoader;
+	public static final String NAME			= "SE Business App";
+	public static final String DATA_PATH	= "data/";
+	public static final String FXML_PATH	= "fxgui/";
+	private static App _app = null;
 
+	/*
+	 * List of App components in order of appearance on the main GUI/TabPanel.
+	 */
+	private List<Component> components = Arrays.asList( new Component[] {
+		new Component(	"Main",			"App.fxml",			null ),
+		new Component(	"Calculator",	"Calculator.fxml",	CalculatorLogicIntf.getController() ),
+		new Component(	"Calc_2",		"Calculator.fxml",	CalculatorLogicIntf.getController() ),
+		new Component(	"Kunden",		"Customer.fxml",	CustomerDataIntf.getController() ),
+		new Component(	"Kundenliste_B","Customer.fxml",	CustomerDataIntf.getController() ),
+		//new Component( "Katalog",		"Catalog.fxml",		CatalogDataIntf.getController() ),
+	});
+
+	public static App getInstance() {
+		return _app;
+	}
 
 	public static void main( String[] args) {
 		launch( args );
 	}
 
-
 	@Override
-	public void start( Stage stage ) {
-		int i = 1;
-		sceneLoader = new FXSceneLoader( this );
+	public void start( Stage stage ) throws IOException {
+		App._app = this;
+		AppGUIBuilder appGUIBuilder = AppGUIBuilder.getInstance();
 
-		rootPane = (BorderPane)sceneLoader.loadFXML( AppController.class, ( controller, fxmlRoot ) -> {
-			this.rootScene = new Scene( (BorderPane)fxmlRoot, 800, 480);
+		System.out.print( " **** Building Scene: " );
+
+		appGUIBuilder.buildAppUI( stage, components, ( tab, comp, fxmlController ) -> {
+			comp.inject( fxmlController );
+			System.out.print( ", " + comp.getName() );
 		});
-		tabsPane = (TabPane)rootPane.lookup( "#tabs-pane" );
+		System.out.println( " OK." );
 
-		//LogicFactory.init();
-		BusinessLogicIntf businessLogic = LogicFactory.getBusinessLogic();
-		businessLogic.loadData();
+		startComponentsWrapper( "    + Starting Controllers: ", 1, comp -> {
+			comp.start();
+		});
 
-		Tab t0 = loadTaxCalculatorView( "MwSt-Rechner", i++, LogicFactory.getCalculatorLogic() );
-		//Tab t1 = loadTaxCalculatorView( "Tax-Calculator (Demo)", i++, new demo.CalculatorDemo() );
-
-		Tab t2 = addTab( "Privatkunden", i++, sceneLoader.loadFXML(
-				IndividualCustomerViewController.class, ( controller, rootNode ) -> {
-					controller.injectImpl( (LogicIntf)businessLogic );
-				}
-		));
-		Tab t3 = addTab( "Firmenkunden", i++, sceneLoader.loadFXML(
-				BusinessCustomerViewController.class, ( controller, rootNode ) -> {
-					controller.injectImpl( (LogicIntf)businessLogic );
-				}
-		));
-		Tab t4 =  addTab( "Reservierungen", i++, sceneLoader.loadFXML(
-				ReservationViewController.class, ( controller, rootNode ) -> {
-					controller.injectImpl( (LogicIntf)businessLogic );
-				}
-		));
-
-		tabsPane.getSelectionModel().select( t0 );
-
-		addTab( "Rechnungen", i++, null );
-		addTab( "Fahrzeuge", i++, null );
-		addTab( "Personal", i++, null );
-
+		appGUIBuilder.getTabPane().getSelectionModel().select( 2 );		// select n-th Tab
 		stage.setTitle( App.NAME );
-		stage.setScene( this.rootScene );
-		stage.show();
+		stage.show();		// show JavaFX GUI
 	}
 
-	Scene getRootScene() {
-		return this.rootScene;
+	@Override
+	public void stop() {
+		System.out.print( " **** Shutting down ..." );
+		stopComponentsWrapper( "\n    + Stopping Controllers: ", 1, comp -> {
+			comp.stop();
+		});
+		System.out.println( " OK." );
+		System.exit( 0 );
 	}
 
 
 	/*
-	 * ************************************************************************
-	 * Private method(s).
+	 * *********************************************************************
+	 * Private helper methods.
 	 */
-	private Tab loadTaxCalculatorView( String name, int n, LogicIntf logicImpl ) {
-		Node fxmlRoot = sceneLoader.loadFXML( CalculatorViewController.class, ( controller, rootNode ) -> {
-			controller.injectImpl( logicImpl );
-		});
-		Tab tab = addTab( name, n, fxmlRoot );
-		tabsPane.addEventFilter( MouseEvent.MOUSE_RELEASED, ( e ) -> {
-			Tab t = (Tab)tabsPane.getSelectionModel().selectedItemProperty().get();
-			if( t==tab ) {
-				fxmlRoot.requestFocus();
-			}
-		});
-		return tab;
+	@FunctionalInterface
+	private interface ControllerCallbackIntf {
+		void call( ControllerIntf controller );
 	}
 
-	private Tab addTab( String name, int n, Node loadedFXMLRoot ) {
-		Tab tab = new Tab( name );
-		tabsPane.getTabs().add( n, tab );
-		if( loadedFXMLRoot != null ) {
-			// bind size of loaded FXMLRoot node to size of top-level rootPane.
-			((AnchorPane)loadedFXMLRoot).prefWidthProperty().bind( rootPane.widthProperty());
-			((AnchorPane)loadedFXMLRoot).prefHeightProperty().bind( rootPane.heightProperty());
-			tab.setContent( loadedFXMLRoot );
+	private void startComponentsWrapper( String logMsg, int logLevel, ControllerCallbackIntf callBack ) {
+		boolean first = true;
+		log( logMsg, logLevel );
+		for( Component c : components ) {
+			if( c.getLogic() != null ) {
+				callBack.call( c.getLogic() );
+				first = log( first, ( ( logLevel & 1 ) == 0 )? null : c.getLogic() );
+			}
 		}
-		return tab;
+		for( Component c : components ) {
+			if( c.getGUIController() != null ) {
+				callBack.call( c.getGUIController() );
+				first = log( first, ( ( logLevel & 2 ) == 0 )? null: c.getGUIController() );
+			}
+		}
+		log( " OK.\n", logLevel );
+	}
+
+	private void stopComponentsWrapper( String logMsg, int logLevel, ControllerCallbackIntf callBack ) {
+		boolean first = true;
+		Collections.reverse( components );
+		log( logMsg, logLevel );
+		for( Component c : components ) {
+			callBack.call( c.getGUIController() );
+			first = log( first, ( ( logLevel & 2 ) == 0 )? null: c.getGUIController() );
+		}
+		for( Component c : components ) {
+			callBack.call( c.getLogic() );
+			first = log( first, ( ( logLevel & 1 ) == 0 )? null : c.getLogic() );
+		}
+	}
+
+	private boolean log( boolean first, ControllerIntf controller ) {
+		boolean res = first;
+		if( controller != null ) {
+			res = false;
+			String comma = first? "" : ", ";
+			System.out.print( comma + controller.getClass().getSimpleName() );
+			annimateDelay( 80 );
+		}
+		return res;
+	}
+
+	private void log( String logLine, int logLevel ) {
+		if( logLevel > 0 ) {
+			annimateDelay( 120 );
+			System.out.print( logLine );
+		}
+	}
+
+	private void annimateDelay( int millis ) {
+		try { TimeUnit.MILLISECONDS.sleep( millis ); } catch( InterruptedException e ) { }
 	}
 
 }
