@@ -1,6 +1,7 @@
 package com.businessapp.fxgui;
 
 import com.businessapp.App;
+import com.businessapp.Component;
 import com.businessapp.ControllerIntf;
 
 import javafx.fxml.FXML;
@@ -14,6 +15,10 @@ public class AppFXMLController implements FXMLControllerIntf {
 
 	@Override
 	public void inject(ControllerIntf dep) {
+	}
+
+	@Override
+	public void inject( Component parent ) {		
 	}
 
 	@Override

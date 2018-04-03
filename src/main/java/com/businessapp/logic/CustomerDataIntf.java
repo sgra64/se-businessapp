@@ -20,7 +20,7 @@ public interface CustomerDataIntf extends ControllerIntf {
 	}
 
 	/**
-	 * Public data access methods to Customer data.
+	 * Public access methods to Customer data.
 	 */
 	Customer findCustomerById( String id );
 

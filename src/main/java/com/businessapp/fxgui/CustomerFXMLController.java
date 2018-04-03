@@ -24,6 +24,7 @@ import java.util.Collection;
 import java.util.List;
 
 import com.businessapp.App;
+import com.businessapp.Component;
 import com.businessapp.ControllerIntf;
 import com.businessapp.logic.CustomerDataIntf;
 import com.businessapp.pojos.Customer;
@@ -83,6 +84,10 @@ public class CustomerFXMLController implements FXMLControllerIntf {
 	@Override
 	public void inject( ControllerIntf dep ) {
 		this.DS = (CustomerDataIntf)dep;
+	}
+
+	@Override
+	public void inject( Component parent ) {		
 	}
 
 	@Override

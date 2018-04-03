@@ -1,5 +1,6 @@
 package com.businessapp.fxgui;
 
+import com.businessapp.Component;
 import com.businessapp.ControllerIntf;
 import com.businessapp.logic.CalculatorLogicIntf;
 
@@ -47,6 +48,10 @@ public class CalculatorFXMLController implements CalculatorGUI_Intf {
 	@Override
 	public void inject( ControllerIntf dep ) {
 		this.logic = (CalculatorLogicIntf)dep;
+	}
+
+	@Override
+	public void inject( Component parent ) {		
 	}
 
 

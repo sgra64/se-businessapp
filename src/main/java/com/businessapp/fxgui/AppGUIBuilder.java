@@ -27,7 +27,7 @@ public class AppGUIBuilder {
 
 	@FunctionalInterface
 	public interface AppGUIBuilderCallbackIntf {
-		void call( Tab tab, Component component, FXMLControllerIntf fxmlController );
+		void call( boolean first, Component component, FXMLControllerIntf fxmlController );
 	}
 
 	private AppGUIBuilder() {
@@ -46,8 +46,9 @@ public class AppGUIBuilder {
 	}
 
 
-	public void buildAppUI( Stage stage, List<Component> components, AppGUIBuilderCallbackIntf initializer ) {
-
+	public void buildAppUI( Stage stage, List<Component> components,
+			AppGUIBuilderCallbackIntf initializer )
+	{
 		for( Component comp : components ) {
 			scene = stage.getScene();
 			Parent root = scene==null? null : scene.getRoot();
@@ -91,6 +92,8 @@ public class AppGUIBuilder {
 						stage.setMinWidth( 520.0 );
 						stage.setMinHeight( 420.0 );
 
+						initializer.call( true, comp, fxmlController );
+
 					} else {
 				        Tab tab = new Tab( name );
 						// Make tab id unique.
@@ -103,7 +106,7 @@ public class AppGUIBuilder {
 						tab.setId( tabId );
 						tabsPane.getTabs().add( tab );
 
-						initializer.call( tab, comp, fxmlController );
+						initializer.call( false, comp, fxmlController );
 
 						// bind size of loaded FXMLRoot node to size of top-level rootPane.
 						pane.prefWidthProperty().bind( ((BorderPane) root).widthProperty());

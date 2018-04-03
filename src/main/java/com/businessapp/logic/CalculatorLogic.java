@@ -1,5 +1,6 @@
 package com.businessapp.logic;
 
+import com.businessapp.Component;
 import com.businessapp.ControllerIntf;
 import com.businessapp.fxgui.CalculatorGUI_Intf;
 import com.businessapp.fxgui.CalculatorGUI_Intf.Token;
@@ -18,10 +19,13 @@ class CalculatorLogic implements CalculatorLogicIntf {
 	CalculatorLogic() {
 	}
 
-
 	@Override
 	public void inject( ControllerIntf dep ) {
 		this.view = (CalculatorGUI_Intf)dep;
+	}
+
+	@Override
+	public void inject( Component parent ) {		
 	}
 
 	@Override
