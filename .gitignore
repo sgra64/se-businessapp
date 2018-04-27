@@ -3,4 +3,9 @@
 .settings
 info.txt
 target
+.idea
+.DS_Store
+.Thumbs
+*.iml
+out/
 lib
