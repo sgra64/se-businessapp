@@ -82,7 +82,11 @@ public class CalculatorFXMLController implements CalculatorGUI_Intf {
 			btn.setOnMousePressed( ( e ) -> {
 				Button bt = (Button)e.getSource();
 				int row = GridPane.getRowIndex( bt );
+				System.out.println("row: " +row);
+				System.out.println(bt);
+				System.out.println(GridPane.getColumnIndex(bt));
 				int col = GridPane.getColumnIndex( bt );
+				System.out.println("col: " + col);
 				int idx = row * keyPadCols + col;	// flatten grid coordinates to idx[0..n]
 				if( this.logic != null ) {
 					this.logic.nextToken( Token.values()[ idx ] );
