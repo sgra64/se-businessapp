@@ -27,15 +27,15 @@
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
          </rowConstraints>
          <children>
-
             <Button styleClass="keypad-control" text="MwSt" textAlignment="CENTER" GridPane.columnIndex="0" GridPane.rowIndex="0">
-			</Button>
+               </Button>
             <Button styleClass="keypad-control" text="CE" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="0">
                </Button>
             <Button styleClass="keypad-control" text="C" textAlignment="CENTER" GridPane.columnIndex="2" GridPane.rowIndex="0">
                </Button>
             <Button styleClass="keypad-control" text="&lt;-" textAlignment="CENTER" GridPane.columnIndex="3" GridPane.rowIndex="0">
                </Button>
+           
             <Button layoutX="10.0" layoutY="10.0" styleClass="keypad-control" text="(" textAlignment="CENTER" GridPane.columnIndex="0" GridPane.rowIndex="1" />
             <Button layoutX="59.0" layoutY="80.0" styleClass="keypad-MRC" text=")" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="1" />
             <Button layoutX="108.0" layoutY="80.0" styleClass="keypad-MRC" text="Perc" textAlignment="CENTER" GridPane.columnIndex="2" GridPane.rowIndex="1" />
@@ -85,7 +85,7 @@
             	</Button>
             <Button styleClass="keypad-operator" text="=" textAlignment="CENTER" GridPane.columnIndex="3" GridPane.rowIndex="6">
                </Button>
-
+           
          </children>
       </GridPane>
       <TextField id="calculator-displayfield" fx:id="displayTextField" layoutX="46.0" layoutY="23.0" prefHeight="51.0" prefWidth="194.0" text="1,000">
