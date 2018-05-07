@@ -42,7 +42,7 @@ class PopupNotes extends Stage {
 		 * Define column: Time.
 		 */
 		TableColumn<LogEntry,String> timeCol = new TableColumn<LogEntry,String>( "Zeit" );
-		timeCol.setMinWidth( 110 );
+		timeCol.setMinWidth( 120 );
 
 		timeCol.setCellValueFactory(
 			cellData2 -> {
