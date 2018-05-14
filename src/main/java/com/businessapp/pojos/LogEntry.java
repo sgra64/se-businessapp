@@ -91,7 +91,7 @@ public class LogEntry implements Serializable {
 	 */
 	private Object[] parselogStr( String logStr ) {
 		Object[] res = new Object[] { null, null };
-		String[] spl = logStr.split( Separator );
+		String[] spl = logStr.split( Separator, 2 );	// return max 2 splits, allows ',' to be used in logLine
 		if( spl.length > 1 ) {
 			// two parts, try to parse date
 			try {
