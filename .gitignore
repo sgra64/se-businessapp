@@ -1,6 +1,7 @@
 .classpath
 .project
 .settings
-info.txt
 target
 lib
+data
+addon*.tar
