@@ -50,25 +50,30 @@ public class App extends Application {
 
 	@Override
 	public void start( Stage stage ) throws IOException {
-		int logLevelStart = 1;	// 0: no log, 1: logic controller, 2: fxml controller, 3: both
-		App._app = this;
-		AppGUIBuilder appGUIBuilder = AppGUIBuilder.getInstance();
+		try {
+			int logLevelStart = 1;	// 0: no log, 1: logic controller, 2: fxml controller, 3: both
+			App._app = this;
+			AppGUIBuilder appGUIBuilder = AppGUIBuilder.getInstance();
+	
+			System.out.print( " **** Building Scene: " );
+	
+			appGUIBuilder.buildAppUI( stage, compBuilder.getComponents(), ( first, comp, fxmlController ) -> {
+				comp.inject( fxmlController );
+				System.out.print( ( first? "" : ", " ) + comp.getName() );
+			});
+			System.out.println( " - OK." );
+	
+			compBuilder.start( "    + Starting Controllers: ", logLevelStart, comp -> {
+				comp.start();
+			});
+	
+			appGUIBuilder.getTabPane().getSelectionModel().select( 2 );		// select n-th Tab at start
+			stage.setTitle( App.NAME );
+			stage.show();		// show JavaFX GUI
 
-		System.out.print( " **** Building Scene: " );
-
-		appGUIBuilder.buildAppUI( stage, compBuilder.getComponents(), ( first, comp, fxmlController ) -> {
-			comp.inject( fxmlController );
-			System.out.print( ( first? "" : ", " ) + comp.getName() );
-		});
-		System.out.println( " - OK." );
-
-		compBuilder.start( "    + Starting Controllers: ", logLevelStart, comp -> {
-			comp.start();
-		});
-
-		appGUIBuilder.getTabPane().getSelectionModel().select( 2 );		// select n-th Tab at start
-		stage.setTitle( App.NAME );
-		stage.show();		// show JavaFX GUI
+		} catch( Exception e ) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
