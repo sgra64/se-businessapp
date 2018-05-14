@@ -67,14 +67,6 @@ public class Customer implements EntityIntf  {
 		return contacts;
 	}
 
-	public List<String> getNotesAsStringList() {
-		List<String>res = new ArrayList<String>();
-		for( LogEntry n : notes ) {
-			res.add( n.toString() );
-		}
-		return res;
-	}
-
 	public List<LogEntry> getNotes() {
 		return notes;
 	}
