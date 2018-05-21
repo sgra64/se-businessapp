@@ -37,12 +37,12 @@ public class Component {
 	private ControllerIntf fxmlController;	// GUI/fxml controller part
 
 	/**
-	 * Constructor.
+	 * Public constructor.
 	 * @param name component name
 	 * @param fxmlResource to load FXML and create fxmlController
 	 * @param logic controller provided
 	 */
-	Component( String name, String fxmlResource, ControllerIntf logic ) {
+	public Component( String name, String fxmlResource, ControllerIntf logic ) {
 		this.name = name;
 		this.fxmlResource = fxmlResource;
 		this.fxmlController = new ProxyController();
